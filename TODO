@@ -1,0 +1,55 @@
+
+
+
+!!!! 
+
+range for stations:
+    {{range .}}
+        <div>
+            <h3>{{.Name}}</h3>
+            <img src={{.Favicon}}></img>
+            <audio controls>
+                <source src={{.Url}} type="audio/mp3">
+                <source src={{.Url}} type="audio/wav">
+            </audio>
+            <p>{{.Country}}</p>
+            <p>{{.Tags}}</p>
+        </div>
+    {{end}}
+
+
+
+{{range .}}
+    <div style="background-image: url({{.Favicon}});">
+        <h3>{{.Name}}</h3>
+        <div>
+            <audio controls>
+                <source src={{.Url}} type="audio/mp3">
+                <source src={{.Url}} type="audio/wav">
+            </audio>
+        </div>
+        <p>{{.Country}}</p>
+        <p>{{.Tags}}</p>
+    </div>
+{{end}}
+!!!!
+
+problem: 
+
+the page explode because to many stations data to load:
+- image url
+- streaming url 
+
+!!!!
+
+code to keep for future functions: 
+
+var virginRadio Station
+for i := 0; i < len(s); i++ {
+	if strings.Contains(s[i].Name, "Virgin") {
+ 		virginRadio = s[i]
+ 	}
+}
+log.Print("virgin radio -> ", virginRadio)
+
+!!!!

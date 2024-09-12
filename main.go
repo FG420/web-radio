@@ -8,10 +8,6 @@ import (
 	"github.com/FG420/web-radio/radio"
 )
 
-// type Data struct {
-// 	Stations []*Station
-// }
-
 type Station struct {
 	ID      string
 	Name    string
@@ -33,27 +29,41 @@ func NewStation(id, name, url, country, tags, favicon string) *Station {
 }
 
 func handleHome(w http.ResponseWriter, req *http.Request) {
-	// templ := template.Must(template.ParseFiles("views/index.html"))
-	// templ.Execute(w, nil)
+	templ := template.Must(template.ParseFiles("views/home.html"))
+	templ.Execute(w, nil)
 
-	templ := template.Must(template.ParseFiles("views/data.html"))
-	getStations := radio.GetStationsByCountry("italy")
+	country := req.FormValue("country")
 
-	var s *Station
+	log.Println("home -> ", country)
+}
+
+func handleGetStationsByCountry(w http.ResponseWriter, req *http.Request) {
+
+	country := req.PathValue("country")
+
+	log.Println("stations -> ", country)
+
+	templ := template.Must(template.ParseFiles("views/stations.html"))
+	getStations := radio.GetStationsByCountry(country)
+
+	var s []Station
+
 	for i := 0; i < len(getStations); i++ {
 		ss := NewStation(getStations[i].StationUUID, getStations[i].Name, getStations[i].URL,
 			getStations[i].Country, getStations[i].Tags, getStations[i].Favicon)
-		s = ss
+
+		s = append(s, *ss)
 	}
 
-	log.Println(s)
+	log.Println("\n", s)
 
-	templ.ExecuteTemplate(w, "stationData", s)
+	templ.ExecuteTemplate(w, "stations", s)
 }
 
 func main() {
 
 	http.HandleFunc("/", handleHome)
+	http.HandleFunc("/:country", handleGetStationsByCountry)
 
 	http.ListenAndServe(":8080", nil)
 
