@@ -28,42 +28,55 @@ func NewStation(id, name, url, country, tags, favicon string) *Station {
 	}
 }
 
+const (
+	MAXPAGE = 9
+)
+
 func handleHome(w http.ResponseWriter, req *http.Request) {
-	templ := template.Must(template.ParseFiles("views/home.html"))
+	var count = 0
+	templ := template.Must(template.ParseFiles("views/home.html", "views/components/navbar.html", "views/components/footer.html"))
 	templ.Execute(w, nil)
 
 	country := req.FormValue("country")
+	// page := req.FormValue("page")
 
-	log.Println("home -> ", country)
+	log.Println("country -> ", country)
+
+	if country == "" {
+		return
+	} else {
+		handleGetStationsByCountry(w, country, MAXPAGE)
+		count++
+	}
+
 }
 
-func handleGetStationsByCountry(w http.ResponseWriter, req *http.Request) {
+func handleGetStationsByCountry(w http.ResponseWriter, country string, max int) {
 
-	country := req.PathValue("country")
-
-	log.Println("stations -> ", country)
-
-	templ := template.Must(template.ParseFiles("views/stations.html"))
+	templ := template.Must(template.ParseFiles("views/components/stations.html"))
 	getStations := radio.GetStationsByCountry(country)
+
+	log.Println(len(getStations) / max)
 
 	var s []Station
 
-	for i := 0; i < len(getStations); i++ {
+	for i := 0; i < len(getStations)/max; i++ {
 		ss := NewStation(getStations[i].StationUUID, getStations[i].Name, getStations[i].URL,
 			getStations[i].Country, getStations[i].Tags, getStations[i].Favicon)
 
 		s = append(s, *ss)
 	}
 
-	log.Println("\n", s)
-
 	templ.ExecuteTemplate(w, "stations", s)
 }
 
 func main() {
+	// mux := http.NewServeMux()
 
 	http.HandleFunc("/", handleHome)
-	http.HandleFunc("/:country", handleGetStationsByCountry)
+	// mux.HandleFunc("/{country}", handleGetStationsByCountry)
+
+	// http.HandleFunc("/{country}", handleCiao)
 
 	http.ListenAndServe(":8080", nil)
 

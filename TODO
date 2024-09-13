@@ -1,44 +1,19 @@
 
-
-
-!!!! 
-
-range for stations:
-    {{range .}}
-        <div>
-            <h3>{{.Name}}</h3>
-            <img src={{.Favicon}}></img>
-            <audio controls>
-                <source src={{.Url}} type="audio/mp3">
-                <source src={{.Url}} type="audio/wav">
-            </audio>
-            <p>{{.Country}}</p>
-            <p>{{.Tags}}</p>
-        </div>
-    {{end}}
-
-
-
-{{range .}}
-    <div style="background-image: url({{.Favicon}});">
-        <h3>{{.Name}}</h3>
-        <div>
-            <audio controls>
-                <source src={{.Url}} type="audio/mp3">
-                <source src={{.Url}} type="audio/wav">
-            </audio>
-        </div>
-        <p>{{.Country}}</p>
-        <p>{{.Tags}}</p>
-    </div>
-{{end}}
-!!!!
-
-problem: 
+PROBLEM: 
 
 the page explode because to many stations data to load:
 - image url
 - streaming url 
+
+SOLUTIONS:
+opt1 -> Create an algorithm to load only 10 or 20 stations at a time. ex: "/countries/?country={country}/?page=1"
+        - cut the array of stations in multiple ones (maybe)
+
+
+
+
+opt2 -> 
+
 
 !!!!
 

@@ -9,23 +9,18 @@
 </head>
 
 <body>
+    {{template "navbar"}}
 
     <h1>Dio</h1>
-    <form action="/">
+    <form>
         <label for="country">Insert the country of choice</label>
         <input type="text" name="country" id="country-input">
         <button>Search</button>
     </form>
-    
 
+    <div hx-get="/?country={country}/?page={page}" hx-swap="delete"></div>
 
-    {{template "stations"}}
-
+    {{template "footer"}}
 </body>
 
 </html>
-
-
-
-
-
