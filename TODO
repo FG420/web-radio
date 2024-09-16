@@ -12,7 +12,11 @@ opt1 -> Create an algorithm to load only 10 or 20 stations at a time. ex: "/coun
 
 
 
-opt2 -> 
+opt2 -> Change the structure of the project:
+	home page : Selecting the country of interest... click on it!
+		the stations page return all the station names and the link to the specific url... click on one of it!
+			specific station, (ex. country: italy, station: VirginRadio) so at the page VirginRadio page
+			u can listen to the music of the selected station
 
 
 !!!!
