@@ -1,25 +1,33 @@
-
-
-
-{{define "stations"}}
-<div hx-get="/?country={country}" hx-trigger="revealed" hx-swap="afterend">
-    <h1>Stations Page</h1>
+<!DOCTYPE html>
+<html lang="en">
     
-    <ul>
-        {{range .}}
-        <div style="background-image: url({{.Favicon}}); background-repeat: no-repeat;">
-            <h3>{{.Name}}</h3>
-            <div>
-                <audio controls>
-                    <source src={{.Url}} type="audio/mp3">
-                    <source src={{.Url}} type="audio/wav">
-                </audio>
-            </div>
-            <p>{{.Country}}</p>
-            <p>{{.Tags}}</p>
-        </div>
-        {{end}}
-    </ul>
+{{define "stations"}}
 
-</div>
+{{template "head"}}
+
+<body>
+    
+    <div>
+        <h1>Stations Page</h1>
+        <ul>
+            {{range .}}
+            <div style="background-image: url({{.Favicon}}); background-repeat: no-repeat;">
+                <h3>{{.Name}}</h3>
+                <div>
+                    <audio controls>
+                        <source src={{.Url}} type="audio/mp3">
+                        <source src={{.Url}} type="audio/wav">
+                    </audio>
+                </div>
+                <!-- <p>{{.Country}}</p> -->
+                <p>{{.Tags}}</p>
+            </div>
+            {{end}}
+        </ul>
+    
+    </div>
+</body>
+
 {{end}}
+
+</html>

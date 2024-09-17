@@ -1,0 +1,128 @@
+{{define "head"}}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+
+    <!-- <link href="style/index.css" rel="stylesheet" /> -->
+
+    <style>
+        #country-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 16px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            width: calc(33.333% - 32px);
+            box-sizing: border-box;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            margin: 0 0 8px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .card-subtitle {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        nav {
+            border-radius: 8px;
+            background-color: #333;
+            color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h3 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav ul li {
+            display: inline;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #f0f0f0;
+        }
+
+
+        footer {
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        footer h3 {
+            margin: 0 0 10px;
+            font-size: 24px;
+        }
+
+        footer ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        footer ul li {
+            display: inline;
+        }
+
+        footer ul li a {
+            color: #333;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        footer ul li a:hover {
+            color: #007bff;
+        }
+    </style>
+
+
+
+
+    <title>Go Radio</title>
+</head>
+
+{{end}}

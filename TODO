@@ -5,30 +5,12 @@ the page explode because to many stations data to load:
 - image url
 - streaming url 
 
-SOLUTIONS:
-opt1 -> Create an algorithm to load only 10 or 20 stations at a time. ex: "/countries/?country={country}/?page=1"
-        - cut the array of stations in multiple ones (maybe)
+SOLUTION:
 
+!! DONE !! home page : list of countries - click action -> stations (of that country) page
 
-
-
-opt2 -> Change the structure of the project:
-	home page : Selecting the country of interest... click on it!
-		the stations page return all the station names and the link to the specific url... click on one of it!
-			specific station, (ex. country: italy, station: VirginRadio) so at the page VirginRadio page
-			u can listen to the music of the selected station
-
-
-!!!!
-
-code to keep for future functions: 
-
-var virginRadio Station
-for i := 0; i < len(s); i++ {
-	if strings.Contains(s[i].Name, "Virgin") {
- 		virginRadio = s[i]
- 	}
-}
-log.Print("virgin radio -> ", virginRadio)
-
-!!!!
+!! TO DO !!
+stations page: do group by tags?? (MAYBE)
+->  Load only the image and the title of them, then...
+	when user click on one station of interest it will load the player
+	for listening to live radio!
