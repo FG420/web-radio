@@ -1,33 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-    
-{{define "stations"}}
+
 
 {{template "head"}}
 
 <body>
-    
-    <div>
+    {{template "navbar"}}
+
+    <div class="stations-container">
         <h1>Stations Page</h1>
-        <ul>
+        <ul class="stations-list">
             {{range .}}
-            <div style="background-image: url({{.Favicon}}); background-repeat: no-repeat;">
-                <h3>{{.Name}}</h3>
-                <div>
-                    <audio controls>
-                        <source src={{.Url}} type="audio/mp3">
-                        <source src={{.Url}} type="audio/wav">
-                    </audio>
-                </div>
-                <!-- <p>{{.Country}}</p> -->
-                <p>{{.Tags}}</p>
-            </div>
+            <li class="station-card">
+                <div class="station-image" style="background-image: url({{.Favicon}});"></div>
+                <h3 class="station-name">{{.Name}}</h3>
+
+                <button hx-get="/{{.Country}}/{{.ID}}" hx-target="#audio-{{.ID}}" class="station-button">Listen!</button>
+                <div id="audio-{{.ID}}"></div>
+
+                <p class="station-tags">{{.Tags}}</p>
+            </li>
             {{end}}
         </ul>
-    
     </div>
-</body>
 
-{{end}}
+    {{template "footer"}}
+</body>
 
 </html>

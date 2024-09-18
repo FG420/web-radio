@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -10,6 +11,8 @@ import (
 )
 
 type (
+	Component string
+
 	Station struct {
 		ID      string
 		Name    string
@@ -24,6 +27,12 @@ type (
 		ISO          string
 		StationCount int
 	}
+)
+
+const (
+	HEAD_URL   Component = "views/components/head.html"
+	NAVBAR_URL Component = "views/components/navbar.html"
+	FOOTER_URL Component = "views/components/footer.html"
 )
 
 func NewStation(id, name, url, country, favicon string, tags string) *Station {
@@ -45,12 +54,14 @@ func NewCountry(name, iso string, stations int) *Country {
 	}
 }
 
-// func SortStationByTag(tag string)[]*Station {return }
+func createTemplate(templatePath string) *template.Template {
+	templ := template.Must(template.ParseFiles(templatePath, string(HEAD_URL),
+		string(NAVBAR_URL), string(FOOTER_URL)))
+
+	return templ
+}
 
 func handleHome(w http.ResponseWriter, req *http.Request) {
-	templ := template.Must(template.ParseFiles("views/home.html", "views/components/head.html",
-		"views/components/navbar.html", "views/components/footer.html"))
-
 	c := radio.GetCountriesNames()
 	var countries []Country
 	countrySeen := make(map[string]bool)
@@ -69,7 +80,7 @@ func handleHome(w http.ResponseWriter, req *http.Request) {
 		countries = append(countries, *addC)
 	}
 
-	templ.Execute(w, countries)
+	createTemplate("views/home.html").Execute(w, countries)
 }
 
 func handleGetStationsByCountry(w http.ResponseWriter, req *http.Request) {
@@ -80,30 +91,54 @@ func handleGetStationsByCountry(w http.ResponseWriter, req *http.Request) {
 		country = parts[1]
 	}
 
-	templ := template.Must(template.ParseFiles("views/components/head.html", "views/components/stations.html"))
-
 	getStations := radio.FetchStations(radio.StationsByCountry, country)
-
-	log.Println(getStations)
-
 	var s []Station
 
 	for _, station := range getStations {
+
 		addS := NewStation(station.StationUUID, station.Name, station.URL,
 			station.Country, station.Favicon, station.Tags)
-		// log.Print(len(addS.Tags))
-		log.Print(addS.Tags)
+
 		s = append(s, *addS)
 
 	}
 
-	templ.ExecuteTemplate(w, "stations", s)
+	createTemplate("views/components/stations.html").Execute(w, s)
+}
+
+func handleStationUrl(w http.ResponseWriter, req *http.Request) {
+	path := req.URL.Path
+	parts := strings.Split(path, "/")
+	country, ID := "", ""
+
+	if len(parts) > 1 {
+		country = parts[1]
+	}
+	if len(parts) > 2 {
+		ID = parts[2]
+	}
+
+	log.Println("country ->", country)
+	log.Println("ID ->", ID)
+
+	url := radio.GetStationUrl(country, ID)
+	log.Print("url ->", url)
+
+	fmt.Fprintf(w,
+		`<div class="audio-controls">
+			<audio controls>
+				<source src="%s" type="audio/mp3">
+				<source src="%s" type="audio/wav">
+			</audio>
+    	</div>`,
+		url, url)
 }
 
 func main() {
 
 	http.HandleFunc("/", handleHome)
 	http.HandleFunc("/{country}", handleGetStationsByCountry)
+	http.HandleFunc("/{country}/{name}", handleStationUrl)
 
 	http.ListenAndServe(":8080", nil)
 

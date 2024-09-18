@@ -37,6 +37,22 @@ type Station struct {
 	ClickTrend         int    `json:"clicktrend"`
 }
 
+func GetStationUrl(country, id string) string {
+
+	stations := FetchStations(StationsByCountry, country)
+
+	var url = ""
+
+	for _, station := range stations {
+		if station.StationUUID != id {
+			continue
+		}
+		url = station.URL
+	}
+
+	return url
+}
+
 func FetchAllStations() []Station {
 	res := Post(StationsURL, "", nil)
 	return UnmarshalStations(res)
