@@ -3,7 +3,9 @@ package radio
 import (
 	json2 "encoding/json"
 	"fmt"
+	"log"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -37,10 +39,45 @@ type Station struct {
 	ClickTrend         int    `json:"clicktrend"`
 }
 
+type Tag struct {
+	Name string
+}
+
+func NewTag(name string) *Tag {
+	return &Tag{
+		Name: name,
+	}
+}
+
+func GetTags() []Tag {
+	stations := FetchAllStations()
+
+	var tags []Tag
+	tagExist := make(map[string]bool)
+
+	for _, station := range stations {
+		if station.Tags == "" {
+			continue
+		}
+
+		if _, exists := tagExist[station.Tags]; exists {
+			continue
+		}
+
+		arrayTags := strings.Split(station.Tags, ",")
+		for _, tag := range arrayTags {
+			tt := NewTag(tag)
+			tags = append(tags, *tt)
+		}
+
+	}
+
+	log.Print(len(tags))
+	return tags
+}
+
 func GetStationUrl(country, id string) string {
-
 	stations := FetchStations(StationsByCountry, country)
-
 	var url = ""
 
 	for _, station := range stations {

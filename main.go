@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 	"text/template"
@@ -61,7 +60,7 @@ func createTemplate(templatePath string) *template.Template {
 	return templ
 }
 
-func handleHome(w http.ResponseWriter, req *http.Request) {
+func handleHomePage(w http.ResponseWriter, req *http.Request) {
 	c := radio.GetCountriesNames()
 	var countries []Country
 	countrySeen := make(map[string]bool)
@@ -83,7 +82,7 @@ func handleHome(w http.ResponseWriter, req *http.Request) {
 	createTemplate("views/home.html").Execute(w, countries)
 }
 
-func handleGetStationsByCountry(w http.ResponseWriter, req *http.Request) {
+func handleStationsPage(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Path
 	parts := strings.Split(path, "/")
 	country := ""
@@ -117,12 +116,7 @@ func handleStationUrl(w http.ResponseWriter, req *http.Request) {
 	if len(parts) > 2 {
 		ID = parts[2]
 	}
-
-	log.Println("country ->", country)
-	log.Println("ID ->", ID)
-
 	url := radio.GetStationUrl(country, ID)
-	log.Print("url ->", url)
 
 	fmt.Fprintf(w,
 		`<div class="audio-controls">
@@ -134,10 +128,16 @@ func handleStationUrl(w http.ResponseWriter, req *http.Request) {
 		url, url)
 }
 
+func handleTagsPage(w http.ResponseWriter, req *http.Request) {
+	t := radio.GetTags()
+	createTemplate("views/components/tags.html").Execute(w, t)
+}
+
 func main() {
 
-	http.HandleFunc("/", handleHome)
-	http.HandleFunc("/{country}", handleGetStationsByCountry)
+	http.HandleFunc("/", handleHomePage)
+	http.HandleFunc("/tags", handleTagsPage)
+	http.HandleFunc("/{country}", handleStationsPage)
 	http.HandleFunc("/{country}/{name}", handleStationUrl)
 
 	http.ListenAndServe(":8080", nil)
