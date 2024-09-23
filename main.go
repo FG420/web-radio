@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"text/template"
@@ -11,15 +12,6 @@ import (
 
 type (
 	Component string
-
-	Station struct {
-		ID      string
-		Name    string
-		Url     string
-		Country string
-		Favicon string
-		Tags    string
-	}
 
 	Country struct {
 		Name         string
@@ -33,17 +25,6 @@ const (
 	NAVBAR_URL Component = "views/components/navbar.html"
 	FOOTER_URL Component = "views/components/footer.html"
 )
-
-func NewStation(id, name, url, country, favicon string, tags string) *Station {
-	return &Station{
-		ID:      id,
-		Name:    name,
-		Url:     url,
-		Country: country,
-		Favicon: favicon,
-		Tags:    tags,
-	}
-}
 
 func NewCountry(name, iso string, stations int) *Country {
 	return &Country{
@@ -90,19 +71,9 @@ func handleStationsPage(w http.ResponseWriter, req *http.Request) {
 		country = parts[1]
 	}
 
-	getStations := radio.FetchStations(radio.StationsByCountry, country)
-	var s []Station
+	stations := radio.FetchStations(radio.StationsByCountry, country)
 
-	for _, station := range getStations {
-
-		addS := NewStation(station.StationUUID, station.Name, station.URL,
-			station.Country, station.Favicon, station.Tags)
-
-		s = append(s, *addS)
-
-	}
-
-	createTemplate("views/components/stations.html").Execute(w, s)
+	createTemplate("views/components/stations.html").Execute(w, stations)
 }
 
 func handleStationUrl(w http.ResponseWriter, req *http.Request) {
@@ -128,15 +99,39 @@ func handleStationUrl(w http.ResponseWriter, req *http.Request) {
 		url, url)
 }
 
-func handleTagsPage(w http.ResponseWriter, req *http.Request) {
-	t := radio.GetTags()
-	createTemplate("views/components/tags.html").Execute(w, t)
+// func handleTagsPage(w http.ResponseWriter, req *http.Request) {
+// 	t := radio.GetTags()
+// 	createTemplate("views/components/tags.html").Execute(w, t)
+// }
+
+func handleSelectedTag(w http.ResponseWriter, req *http.Request) {
+	path := req.URL.Path
+	parts := strings.Split(path, "/")
+	tag := ""
+
+	if len(parts) > 1 {
+		tag = parts[1]
+	}
+
+	t := radio.GetStationsByTag(tag)
+
+	log.Print(t)
+	log.Println("length ->", len(t))
+
+	fmt.Fprint(w, t)
+
 }
 
 func main() {
 
+	s := radio.FetchStations(radio.StationsByCountry, "italy")
+
+	log.Println(s)
+	log.Println("length ->", len(s))
+
 	http.HandleFunc("/", handleHomePage)
-	http.HandleFunc("/tags", handleTagsPage)
+	// http.HandleFunc("/tags", handleTagsPage)
+	http.HandleFunc("/tags/{tag}", handleSelectedTag)
 	http.HandleFunc("/{country}", handleStationsPage)
 	http.HandleFunc("/{country}/{name}", handleStationUrl)
 
