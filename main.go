@@ -72,6 +72,13 @@ func handleStationsPage(w http.ResponseWriter, req *http.Request) {
 	}
 
 	stations := radio.FetchStations(radio.StationsByCountry, country)
+	log.Println(stations)
+	for _, s := range stations {
+		log.Println("all tags: -> ", s.Tags)
+		for _, tag := range s.Tags {
+			log.Println("tags value : -> ", tag.Name)
+		}
+	}
 
 	createTemplate("views/components/stations.html").Execute(w, stations)
 }
@@ -99,10 +106,10 @@ func handleStationUrl(w http.ResponseWriter, req *http.Request) {
 		url, url)
 }
 
-// func handleTagsPage(w http.ResponseWriter, req *http.Request) {
-// 	t := radio.GetTags()
-// 	createTemplate("views/components/tags.html").Execute(w, t)
-// }
+func handleTagsPage(w http.ResponseWriter, req *http.Request) {
+	t := radio.GetTags()
+	createTemplate("views/components/tags.html").Execute(w, t)
+}
 
 func handleSelectedTag(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Path
@@ -123,15 +130,11 @@ func handleSelectedTag(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-
-	s := radio.FetchStations(radio.StationsByCountry, "italy")
-
-	log.Println(s)
-	log.Println("length ->", len(s))
-
 	http.HandleFunc("/", handleHomePage)
-	// http.HandleFunc("/tags", handleTagsPage)
+
+	http.HandleFunc("/tags", handleTagsPage)
 	http.HandleFunc("/tags/{tag}", handleSelectedTag)
+
 	http.HandleFunc("/{country}", handleStationsPage)
 	http.HandleFunc("/{country}/{name}", handleStationUrl)
 

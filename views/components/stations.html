@@ -17,8 +17,10 @@
                 <button hx-get="/{{.Country}}/{{.ID}}" hx-target="#audio-{{.ID}}"
                     class="station-button">Listen!</button>
                 <div id="audio-{{.ID}}"></div>
-                <p class="station-tags"><a href="/tags/{{.Tags}}">#{{.Tags.Value}}</a>,</p>
-
+                {{range .Tags}}
+                
+                    <span class="station-tags"><a href="/tags/{{.Name}}">#{{.Name}}</a>,</span>
+                {{end}}
             </li>
             {{end}}
         </ul>

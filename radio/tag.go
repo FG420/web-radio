@@ -1,45 +1,50 @@
 package radio
 
-type Tag struct {
-	Value string
-}
+import "sort"
+
+type (
+	Tag struct {
+		Name string
+	}
+	Tags []*Tag
+)
+
+func (ts Tags) Len() int               { return len(ts) }
+func (ts Tags) Less(i int, j int) bool { return ts[i].Name < ts[j].Name }
+func (ts Tags) Swap(i int, j int)      { ts[i].Name, ts[j].Name = ts[j].Name, ts[i].Name }
 
 func (t *Tag) GetValues() string {
-	return t.Value
+	return t.Name
 }
 
 func NewTag(name string) *Tag {
 	return &Tag{
-		Value: name,
+		Name: name,
 	}
 }
 
-// func GetTags() []Tag {
-// 	stations := FetchAllStations()
+func GetTags() Tags {
+	var tags Tags
+	stations := FetchAllStations()
+	tagExist := make(map[string]bool)
 
-// 	var tags []Tag
-// 	tagExist := make(map[string]bool)
+	for _, station := range stations {
+		for _, tag := range station.Tags {
+			if tag.Name == "No tags available!" {
+				continue
+			}
 
-// 	for _, station := range stations {
-// 		count := 0
-// 		if station.Tags[count] == "" {
-// 			continue
-// 		}
+			if _, exists := tagExist[tag.Name]; exists {
+				continue
+			}
 
-// 		if _, exists := tagExist[station.Tags[count]]; exists {
-// 			continue
-// 		}
+			tagExist[tag.Name] = true
+			newT := NewTag(tag.Name)
+			tags = append(tags, newT)
+			sort.Sort(tags)
+		}
 
-// 		count++
+	}
 
-// 		// arrayTags := strings.Split(station.Tags, ",")
-// 		// for _, tag := range arrayTags {
-// 		// 	tt := NewTag(tag)
-// 		// 	tags = append(tags, *tt)
-// 		// }
-
-// 	}
-
-// 	log.Print(len(tags))
-// 	return tags
-// }
+	return tags
+}
