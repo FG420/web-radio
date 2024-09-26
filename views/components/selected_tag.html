@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+{{template "head"}}
+
+<body>
+    {{template "navbar"}}
+    <div class="stations-container">
+        <h1>Stations with Selected Tag</h1>
+
+        <ul class="stations-list">
+            {{range .}}
+            <li class="station-card">
+                <div class="station-image" style="background-image: url({{.Favicon}});"></div>
+                <h3 class="station-name">{{.Name}}</h3>
+
+                <button hx-get="/{{.Country}}/{{.ID}}" hx-target="#audio-{{.ID}}"
+                    class="station-button">Listen!</button>
+                <div id="audio-{{.ID}}"></div>
+                {{range .Tags}}
+                
+                    <span class="station-tags"><a href="/tags/{{.Name}}">#{{.Name}}</a>,</span>
+                {{end}}
+            </li>
+            {{end}}
+        </ul>
+    </div>
+
+    {{template "footer"}}
+</body>
+
+</html>

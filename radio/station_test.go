@@ -16,6 +16,6 @@ func TestFetchStations(t *testing.T) {
 }
 
 func TestGetStationsByTag(t *testing.T) {
-	GetStationsByTag("rock")
+	GetStationsByTag("top 100")
 	// log.Println(st)
 }

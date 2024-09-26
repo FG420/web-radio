@@ -1,7 +1,5 @@
 package radio
 
-import "sort"
-
 type (
 	Tag struct {
 		Name string
@@ -25,25 +23,45 @@ func NewTag(name string) *Tag {
 
 func GetTags() Tags {
 	var tags Tags
+	const x = 10
 	stations := FetchAllStations()
 	tagExist := make(map[string]bool)
 
 	for _, station := range stations {
-		for _, tag := range station.Tags {
-			if tag.Name == "No tags available!" {
+
+		for i := 0; i < len(station.Tags); i++ {
+
+			if station.Tags[i].Name == "No tags available!" {
 				continue
 			}
 
-			if _, exists := tagExist[tag.Name]; exists {
+			if _, exists := tagExist[station.Tags[i].Name]; exists {
 				continue
 			}
 
-			tagExist[tag.Name] = true
-			newT := NewTag(tag.Name)
-			tags = append(tags, newT)
-			sort.Sort(tags)
+			tags = append(tags, &station.Tags[i])
 		}
 
+		// for _, tag := range station.Tags {
+		// 	if tag.Name == "No tags available!" {
+		// 		continue
+		// 	}
+
+		// 	if _, exists := tagExist[tag.Name]; exists {
+		// 		continue
+		// 	}
+
+		// 	tagExist[tag.Name] = true
+		// 	newT := NewTag(tag.Name)
+		// 	tags = append(tags, newT)
+		// 	sort.Sort(tags)
+
+		// 	for i := 0; i < tags.Len(); i++ {
+		// 		if tags[i] == tags[tags.Len()/x] {
+		// 			return tags
+		// 		}
+		// 	}
+		// }
 	}
 
 	return tags

@@ -12,5 +12,6 @@ func TestGetTags(t *testing.T) {
 		log.Println(t.Name)
 
 	}
-	log.Println(tt.Len())
+
+	// log.Println(tt)
 }
