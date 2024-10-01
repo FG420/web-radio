@@ -70,15 +70,7 @@ func handleStationsPage(w http.ResponseWriter, req *http.Request) {
 	if len(parts) > 1 {
 		country = parts[1]
 	}
-
 	stations := radio.FetchStations(radio.StationsByCountry, country)
-	log.Println(stations)
-	for _, s := range stations {
-		log.Println("all tags: -> ", s.Tags)
-		for _, tag := range s.Tags {
-			log.Println("tags value : -> ", tag.Name)
-		}
-	}
 
 	createTemplate("views/components/stations.html").Execute(w, stations)
 }
@@ -97,8 +89,8 @@ func handleStationUrl(w http.ResponseWriter, req *http.Request) {
 	url := radio.GetStationUrl(country, ID)
 
 	fmt.Fprintf(w,
-		`<div class="audio-controls">
-			<audio controls>
+		`<div>
+			<audio controls autoplay>
 				<source src="%s" type="audio/mp3">
 				<source src="%s" type="audio/wav">
 			</audio>
@@ -108,22 +100,24 @@ func handleStationUrl(w http.ResponseWriter, req *http.Request) {
 
 func handleTagsPage(w http.ResponseWriter, req *http.Request) {
 	t := radio.GetTags()
-
-	x := t.Len() / 10
-
-	log.Println(x)
+	path := req.URL.Path
+	log.Println(path)
 
 	createTemplate("views/components/tags.html").Execute(w, t)
 }
 
 func handleSelectedTag(w http.ResponseWriter, req *http.Request) {
-	path := req.URL.Path
-	parts := strings.Split(path, "/")
-	tag := ""
 
-	if len(parts) > 2 {
+	path := req.URL.Path
+	log.Println(path)
+	parts := strings.Split(path, "/")
+	log.Println(parts)
+
+	tag := ""
+	if len(parts) > 0 {
 		tag = parts[2]
 	}
+	log.Println(tag)
 
 	t := radio.GetStationsByTag(tag)
 
@@ -132,14 +126,14 @@ func handleSelectedTag(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+
 	http.HandleFunc("/", handleHomePage)
 
 	http.HandleFunc("/tags", handleTagsPage)
-	http.HandleFunc("/tags/{value}", handleSelectedTag)
+	http.HandleFunc("/tags/{name}", handleSelectedTag)
 
 	http.HandleFunc("/{country}", handleStationsPage)
 	http.HandleFunc("/{country}/{name}", handleStationUrl)
 
 	http.ListenAndServe(":8080", nil)
-
 }

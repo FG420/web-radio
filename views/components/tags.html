@@ -6,16 +6,16 @@
 <body>
     {{template "navbar"}}
 
-    <h1>TAGS</h1>
-    <div>
-        <input type="text" placeholder="Type something!">
+    <h1 id="tags-title">TAGS</h1>
+    <div class="input-container">
+        <input type="text" id="tag-input" placeholder="Type something!">
     </div>
-    <div>
+    <div class="tags-container">
         {{range .}}
-            <a href="/tags/{{.Name}}">#{{.Name}}</a>
+            <a class="tag-link" href="/tags/{{.Name}}">{{.Name}}</a>
         {{end}}
     </div>
-
+    
     {{template "footer"}}
 
 </body>

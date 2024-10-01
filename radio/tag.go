@@ -1,5 +1,16 @@
 package radio
 
+import (
+	"sort"
+	"strings"
+	"sync"
+)
+
+var (
+	tagCache Tags
+	once     sync.Once
+)
+
 type (
 	Tag struct {
 		Name string
@@ -9,7 +20,7 @@ type (
 
 func (ts Tags) Len() int               { return len(ts) }
 func (ts Tags) Less(i int, j int) bool { return ts[i].Name < ts[j].Name }
-func (ts Tags) Swap(i int, j int)      { ts[i].Name, ts[j].Name = ts[j].Name, ts[i].Name }
+func (ts Tags) Swap(i int, j int)      { ts[i], ts[j] = ts[j], ts[i] }
 
 func (t *Tag) GetValues() string {
 	return t.Name
@@ -22,47 +33,28 @@ func NewTag(name string) *Tag {
 }
 
 func GetTags() Tags {
-	var tags Tags
-	const x = 10
-	stations := FetchAllStations()
-	tagExist := make(map[string]bool)
+	once.Do(func() {
+		var tags Tags
+		stations := FetchAllStations()
+		tagExist := make(map[string]bool)
 
-	for _, station := range stations {
+		for _, station := range stations {
+			for _, tag := range station.Tags {
+				if tag.Name == "No tags available!" || strings.Contains(tag.Name, "http") {
+					continue
+				}
+				if _, exists := tagExist[tag.Name]; exists {
+					continue
+				}
 
-		for i := 0; i < len(station.Tags); i++ {
-
-			if station.Tags[i].Name == "No tags available!" {
-				continue
+				tagExist[tag.Name] = true
+				tags = append(tags, &tag)
 			}
-
-			if _, exists := tagExist[station.Tags[i].Name]; exists {
-				continue
-			}
-
-			tags = append(tags, &station.Tags[i])
 		}
 
-		// for _, tag := range station.Tags {
-		// 	if tag.Name == "No tags available!" {
-		// 		continue
-		// 	}
+		sort.Sort(tags)
+		tagCache = tags
+	})
 
-		// 	if _, exists := tagExist[tag.Name]; exists {
-		// 		continue
-		// 	}
-
-		// 	tagExist[tag.Name] = true
-		// 	newT := NewTag(tag.Name)
-		// 	tags = append(tags, newT)
-		// 	sort.Sort(tags)
-
-		// 	for i := 0; i < tags.Len(); i++ {
-		// 		if tags[i] == tags[tags.Len()/x] {
-		// 			return tags
-		// 		}
-		// 	}
-		// }
-	}
-
-	return tags
+	return tagCache
 }

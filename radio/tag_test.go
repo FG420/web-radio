@@ -6,12 +6,10 @@ import (
 )
 
 func TestGetTags(t *testing.T) {
-	tt := GetTags()
+	at := GetTags()
 
-	for _, t := range tt {
+	for _, t := range at {
 		log.Println(t.Name)
-
 	}
 
-	// log.Println(tt)
 }

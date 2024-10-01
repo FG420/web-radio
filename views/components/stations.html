@@ -14,9 +14,14 @@
                 <div class="station-image" style="background-image: url({{.Favicon}});"></div>
                 <h3 class="station-name">{{.Name}}</h3>
 
-                <button hx-get="/{{.Country}}/{{.ID}}" hx-target="#audio-{{.ID}}"
-                    class="station-button">Listen!</button>
-                <div id="audio-{{.ID}}"></div>
+                <div class="audio-container">
+                    <div class="button-container">
+                        <button hx-get="/{{.Country}}/{{.ID}}" hx-target="#audio-{{.ID}}"
+                            class="station-button">Listen!</button>
+                    </div>
+                    <div id="audio-{{.ID}}" class="audio-controls"></div>
+
+                </div>
                 {{range .Tags}}
                 
                     <span class="station-tags"><a href="/tags/{{.Name}}">#{{.Name}}</a>,</span>
