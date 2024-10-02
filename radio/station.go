@@ -132,16 +132,14 @@ func UnmarshalStations(json string) []Station {
 	var data []Data
 	var stations []Station
 	json2.Unmarshal([]byte(json), &data)
-
 	for _, s := range data {
 		if s.Tags == "" {
-			s.Tags = "No tags available!"
+			continue
 		}
 
 		addS := NewStation(s.StationUUID, s.Name, s.URL, s.Country, s.Favicon, s.Tags)
 		stations = append(stations, *addS)
 	}
-
 	return stations
 }
 

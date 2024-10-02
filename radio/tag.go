@@ -40,7 +40,7 @@ func GetTags() Tags {
 
 		for _, station := range stations {
 			for _, tag := range station.Tags {
-				if tag.Name == "No tags available!" || strings.Contains(tag.Name, "http") {
+				if strings.Contains(tag.Name, "http") {
 					continue
 				}
 				if _, exists := tagExist[tag.Name]; exists {

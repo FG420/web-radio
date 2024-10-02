@@ -1,15 +1,14 @@
 package radio
 
 import (
-	"log"
 	"testing"
 )
 
 func TestGetTags(t *testing.T) {
-	at := GetTags()
+	GetTags()
 
-	for _, t := range at {
-		log.Println(t.Name)
-	}
+	// for _, t := range at {
+	// 	log.Println(t.Name)
+	// }
 
 }
