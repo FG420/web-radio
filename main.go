@@ -95,13 +95,12 @@ func handleStationUrl(w http.ResponseWriter, req *http.Request) {
 				<source src="%s" type="audio/mp3">
 				<source src="%s" type="audio/wav">
 			</audio>
-    	</div>`,
+		</div>`,
 		url, url)
 }
 
 func handleTagsPage(w http.ResponseWriter, req *http.Request) {
 	t := radio.GetTags()
-
 	createTemplate("views/components/tags.html").Execute(w, t)
 }
 
@@ -124,6 +123,7 @@ func handleSelectedTag(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+	log.Println("Listen to port: 8080")
 
 	http.HandleFunc("/", handleHomePage)
 

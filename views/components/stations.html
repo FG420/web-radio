@@ -7,7 +7,7 @@
 <body>
     {{template "navbar"}}
     <div class="stations-container">
-        <h1>Stations Page</h1>
+        <h1>Stations</h1>
         <ul class="stations-list">
             {{range .}}
             <li class="station-card">
@@ -24,7 +24,7 @@
                 </div>
                 {{range .Tags}}
                 
-                    <span class="station-tags"><a href="/tags/{{.Name}}">#{{.Name}}</a>,</span>
+                    <span class="station-tags"><a href="/tags/{{.Name}}">#{{.Name}}</a></span>
                 {{end}}
             </li>
             {{end}}

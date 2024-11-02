@@ -1,7 +1,6 @@
 package radio
 
 import (
-	"log"
 	"testing"
 )
 
@@ -11,13 +10,12 @@ func TestFetchStations(t *testing.T) {
 
 func TestGetStationsByTag(t *testing.T) {
 	GetStationsByTag("24-hour punk")
-	// log.Println(st)
 }
 
 func TestFetchAllStations(t *testing.T) {
-	allS := FetchAllStations()
+	FetchAllStations()
 
-	for _, s := range allS {
-		log.Println(s.Tags)
-	}
+	// for _, s := range allS {
+	// 	log.Println(s.Tags)
+	// }
 }

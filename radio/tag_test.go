@@ -7,7 +7,7 @@ import (
 func TestGetTags(t *testing.T) {
 	GetTags()
 
-	// for _, t := range at {
+	// for _, t := range *at {
 	// 	log.Println(t.Name)
 	// }
 

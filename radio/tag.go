@@ -1,14 +1,12 @@
 package radio
 
 import (
-	"sort"
-	"strings"
-	"sync"
+	json2 "encoding/json"
+	"strconv"
 )
 
-var (
-	tagCache Tags
-	once     sync.Once
+const (
+	TagsURL = "https://de1.api.radio-browser.info/json/tags"
 )
 
 type (
@@ -32,29 +30,38 @@ func NewTag(name string) *Tag {
 	}
 }
 
-func GetTags() Tags {
-	once.Do(func() {
-		var tags Tags
-		stations := FetchAllStations()
-		tagExist := make(map[string]bool)
+func FetchTags() *Tags {
+	res := Post(TagsURL, "", nil)
+	return UnmarshalTags(res)
+}
 
-		for _, station := range stations {
-			for _, tag := range station.Tags {
-				if strings.Contains(tag.Name, "http") {
-					continue
-				}
-				if _, exists := tagExist[tag.Name]; exists {
-					continue
-				}
+func FetchTagsDetailed(order Order, reverse bool, hideBroken bool) *Tags {
+	q := make(map[string]string)
+	q["order"] = string(order)
+	q["reverse"] = strconv.FormatBool(reverse)
+	q["hidebroken"] = strconv.FormatBool(hideBroken)
+	res := Post(TagsURL, "", q)
+	return UnmarshalTags(res)
+}
 
-				tagExist[tag.Name] = true
-				tags = append(tags, &tag)
-			}
+func UnmarshalTags(json string) *Tags {
+	var languages *Tags
+	json2.Unmarshal([]byte(json), &languages)
+	return languages
+}
+
+func GetTags() *Tags {
+	var tags Tags
+	fetch := FetchTagsDetailed(OrderName, false, true)
+	tagExist := make(map[string]bool)
+	for _, t := range *fetch {
+
+		if _, exists := tagExist[t.Name]; exists {
+			continue
 		}
+		tagExist[t.Name] = true
+		tags = append(tags, t)
+	}
 
-		sort.Sort(tags)
-		tagCache = tags
-	})
-
-	return tagCache
+	return &tags
 }
